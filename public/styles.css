@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input, select {
+    margin-right: 10px;
+    padding: 5px;
+}
+
+#tabla-gastos, th{
+    border: 3px solid gray;
+    padding: 3px;
+}
+
+td{
+    border-left: 3px solid grey;
+    border-right: 3px solid grey;
+    padding: 3px;
+}
+
+button{
+    padding: 5px;
+    border-radius: 10px;
+}
+
+button:hover{
+    background-color: lightblue;
+    color: white;
+}
+
+.eliminar:hover{
+    background-color: red;
+    color: white;
+}

@@ -1,35 +1,54 @@
-//Version alpha
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('form-tarea');
-    const input = document.getElementById('input-tarea');
-    const lista = document.getElementById('lista-tareas');
+const gastos = [];
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const texto = input.value.trim();
+const form = document.getElementById('gasto-form');
+const tablaBody = document.querySelector('#tabla-gastos tbody');
+const totalSpan = document.getElementById('total');
 
-        if (texto === '') return;
+form.addEventListener('submit', function (e) {
+    e.preventDefault();
 
-        const li = document.createElement('li');
-        const span = document.createElement('span');
-        span.textContent = texto;
+    const descripcion = document.getElementById('descripcion').value;
+    const monto = parseFloat(document.getElementById('monto').value);
+    const categoria = document.getElementById('categoria').value;
 
-        // Evento para marcar como completada
-        span.addEventListener('click', () => {
-            span.classList.toggle('completed');
-        });
+    if (!descripcion || isNaN(monto) || !categoria) return;
 
-        // Botón de eliminar
-        const botonEliminar = document.createElement('button');
-        botonEliminar.textContent = ' ';
+    const gasto = { id: Date.now(), descripcion, monto, categoria };
+    gastos.push(gasto);
+    agregarFila(gasto);
+    actualizarTotal();
 
-        botonEliminar.addEventListener('click', () => {
-            li.remove();
-        });
-
-        li.appendChild(span);
-        li.appendChild(botonEliminar);
-        lista.appendChild(li);
-        input.value = '';
-    });
+    form.reset();
 });
+
+function agregarFila(gasto) {
+    const fila = document.createElement('tr');
+    fila.setAttribute('data-id', gasto.id);
+
+    fila.innerHTML = `
+        <td>${gasto.descripcion}</td>
+        <td>$${gasto.monto.toFixed(2)}</td>
+        <td>${gasto.categoria}</td>
+        <td><button class="eliminar">Eliminar</button></td>
+    `;
+
+    fila.querySelector('.eliminar').addEventListener('click', () => {
+        eliminarGasto(gasto.id);
+    });
+
+    tablaBody.appendChild(fila);
+}
+
+function eliminarGasto(id) {
+    const index = gastos.findIndex(g => g.id === id);
+    if (index !== -1) {
+        gastos.splice(index, 1);
+        document.querySelector(`tr[data-id='${id}']`).remove();
+        actualizarTotal();
+    }
+}
+
+function actualizarTotal() {
+    const total = gastos.reduce((acc, gasto) => acc + gasto.monto, 0);
+    totalSpan.textContent = total.toFixed(2);
+}
